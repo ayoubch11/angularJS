@@ -1,46 +1,56 @@
-pipeline {
-  agent any
-  tools {nodejs "815Node"}
-  environment {
-    registry = 'ayoubch1/ayoubch1'
-    registryCredential = 'password11*'
-  }
-  stages {
-    stage('INSTALL PACKAGES') {
-      steps {
-        sh "npm install"
+
+properties(
+    [
+        [$class: 'BuildDiscarderProperty', strategy:
+          [$class: 'LogRotator', artifactDaysToKeepStr: '14', artifactNumToKeepStr: '5', daysToKeepStr: '30', numToKeepStr: '60']],
+        pipelineTriggers(
+          [
+              pollSCM('H/15 * * * *'),
+              cron('@daily'),
+          ]
+        )
+    ]
+)
+node {
+
+    stage('Checkout') {
+        //disable to recycle workspace data to save time/bandwidth
+        deleteDir()
+        checkout scm
+    }
+
+    docker.image('trion/ng-cli-karma:1.2.1').inside {
+      stage('NPM Install') {
+          withEnv(["NPM_CONFIG_LOGLEVEL=warn"]) {
+              sh 'npm install'
+          }
+      }
+
+      stage('Test') {
+          withEnv(["CHROME_BIN=/usr/bin/chromium-browser"]) {
+            sh 'ng test --progress=false --watch false'
+          }
+          junit '**/test-results.xml'
+      }
+
+      stage('Lint') {
+          sh 'ng lint'
+      }
+        
+      stage('Build') {
+          milestone()
+          sh 'ng build --prod --aot --sm --progress=false'
       }
     }
-    stage('TEST') {
-      steps {
-        echo "insert your testing here"
-      }
+    //end docker
+
+    stage('Archive') {
+        sh 'tar -cvzf dist.tar.gz --strip-components=1 dist'
+        archive 'dist.tar.gz'
     }
-    stage('BUILD APP') {
-      steps {
-        sh "node_modules/.bin/ng build --prod"
-      }
+
+    stage('Deploy') {
+        milestone()
+        echo "Deploying..."
     }
-    stage("BUILD DOCKER") {
-      steps {
-        script {
-          dockerImageBuild = docker.build registry + ":latest"
-        }
-      }
-    }
-     stage("DEPLOY DOCKER") {
-       steps {
-          script {
-            docker.withRegistry('', registryCredential) {
-              dockerImageBuild.push()
-            }
-         }
-      }
-   }
-    stage("DEPLOY & ACTIVATE") {
-      steps {
-        echo 'this part will differ depending on setup'
-      }
-    }
-  }
 }
