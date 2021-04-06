@@ -1,68 +1,51 @@
 pipeline {
-  agent none
-  stages {
-    stage('Fetch dependencies') {
-      agent {
-        docker 'circleci/node:9.3-stretch-browsers'
-      }
-      steps {
-        sh 'yarn'
-        stash includes: 'node_modules/', name: 'node_modules'
-      }
+    agent any
+    environment {
+        GIT_LATEST_COMMIT_EDITOR= sh(
+            returnStdout:true,
+            script: 'git show -s --pretty=%cn '
+        ).trim()
+        GIT_SSH_URL = sh(
+            returnStdout: true,
+            script: "git config --get remote.origin.url | sed 's/https:\\/\\/github.com\\//git@github.com:/g'"
+        )
+        GIT_CURRENT_BRANCH = sh(
+            returnStdout: true,
+            script: "git rev-parse --abbrev-ref HEAD"
+        )
+        HOME = '.'
+	  }
+
+
+    stages {
+        stage ('Show commit author') {
+            steps {
+                sh "echo '${env.GIT_LATEST_COMMIT_EDITOR}'"
+            }
+        }
+        stage ('Execute CI pipeline') {
+            agent {
+                docker { image 'node:12-buster-slim' }
+            }
+            stages{
+                stage ('npm install'){
+                    steps {
+                        sh "npm install"
+                    }
+                }
+                stage('NPM build'){
+                    steps {
+                        sh 'npm run-script build --prod'
+                    }
+                }
+                stage ('Artifacts') {
+                    steps {
+                        sh "tar czvf dist.tar.gz dist"
+                        sh 'tar -czvf app.${BUILD_ID}.tar.gz dist'
+                        archiveArtifacts "**/*.tar.gz"
+                    }
+                }
+            }
+        }
     }
-    stage('Lint') {
-      agent {
-        docker 'circleci/node:9.3-stretch-browsers'
-      }
-      steps {
-        unstash 'node_modules'
-        sh 'yarn lint'
-      }
-    }
-    stage('Unit Test') {
-      agent {
-        docker 'circleci/node:9.3-stretch-browsers'
-      }
-      steps {
-        unstash 'node_modules'
-        sh 'yarn test:ci'
-        junit 'reports/**/*.xml'
-      }
-    }
-    stage('E2E Test') {
-      agent {
-        docker 'circleci/node:9.3-stretch-browsers'
-      }
-      steps {
-        unstash 'node_modules'
-        sh 'mkdir -p reports'
-        sh 'yarn e2e:pre-ci'
-        sh 'yarn e2e:ci'
-        sh 'yarn e2e:post-ci'
-        junit 'reports/**/*.xml'
-      }
-    }
-    stage('Compile') {
-      agent {
-        docker 'circleci/node:9.3-stretch-browsers'
-      }
-      steps {
-        unstash 'node_modules'
-        sh 'yarn build:prod'
-        stash includes: 'dist/', name: 'dist'
-      }
-    }
-    stage('Build and Push Docker Image') {
-      agent any
-      environment {
-        DOCKER_PUSH = credentials('docker_push')
-      }
-      steps {
-        unstash 'dist'
-        sh 'docker build -t $DOCKER_PUSH_URL/frontend .'
-        sh 'docker login -u $DOCKER_PUSH_USR -p $DOCKER_PUSH_PSW $DOCKER_PUSH_URL'
-        sh 'docker push $DOCKER_PUSH_URL/frontend'
-      }
-    }
-  }
 }
