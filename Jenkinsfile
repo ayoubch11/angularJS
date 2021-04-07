@@ -16,7 +16,7 @@ pipeline {
         HOME = '.'
        registry = "YourDockerhubAccount/YourRepository" 
         registryCredential = 'dockerhub_id' 
-        dockerImage = ''
+        dockerImage = 'ayoubch1/angular:${BUILD_ID}'
 	  }
 
 
@@ -63,7 +63,7 @@ pipeline {
 24
                     docker.withRegistry( '', registryCredential ) { 
 25
-                        ayoubch1/angular:${BUILD_ID}.push() 
+                         dockerImage.push() 
 26
                     }
 27
