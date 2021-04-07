@@ -17,7 +17,7 @@ pipeline {
        registry = "YourDockerhubAccount/YourRepository" 
         registryCredential = 'DockerHub' 
         dockerImage = 'ayoubch1/angular:${BUILD_ID}'
-      buildOld = BUID_ID - 1 
+      buildOld = ${BUILD_ID} - 1 
 	  }
 
 
