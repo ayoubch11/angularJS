@@ -59,15 +59,7 @@ pipeline {
 
             steps { 
 
-                script { 
-
-                    docker.withRegistry( '', registryCredential ) { 
-
-                         dockerImage.push() 
-
-                    }
-
-                } 
+               sh ' docker push ayoubch1/angular:${BUILD_ID}'
 
             }
 
