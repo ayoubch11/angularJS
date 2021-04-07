@@ -52,6 +52,6 @@ pipeline {
      steps {
        sh 'cd ${WORKSPACE}/angular@2'
        sh ' docker build . -t angular:{BUILD_ID}'
-            
+     }
        }   
 }
