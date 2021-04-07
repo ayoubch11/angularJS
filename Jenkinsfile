@@ -50,7 +50,7 @@ pipeline {
         }
        stage('Build image') {         
      steps {
-     sh 'docker build -t jenkins-demo:${BUILD_NUMBER}'
+     sh 'docker build -t jenkins-demo:${BUILD_NUMBER} .'
      }
        } 
     }
