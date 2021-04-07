@@ -14,6 +14,7 @@ pipeline {
             script: "git rev-parse --abbrev-ref HEAD"
         )
         HOME = '.'
+        dockerImage = ''
 	  }
 
 
@@ -49,8 +50,7 @@ pipeline {
         }
        stage('Build image') {         
      steps {
-       sh 'cd angular@2'
-       sh ' docker build . -t angular:{BUILD_ID}'
+       dockerImage = docker.build angular:${BUILD_ID}
      }
        } 
     }
