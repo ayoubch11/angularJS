@@ -61,7 +61,22 @@ pipeline {
        
         sh 'docker push ayoubch1/angular:${BUILD_ID}'
         sh 'docker tag ayoubch1/angular:${BUILD_ID} ayoubch1/angular:latest'
+        
+        
+      }
+    }
+      
+      stage('Remove Image') {
+      steps{
+       
         sh 'docker rmi -f ayoubch1/angular:${BUILD_ID}'
+        
+      }
+    }
+       stage('Remove Image') {
+      steps{
+       
+        sh 'docker run -it -d -p 80:80ayoubch1/angular:latest'
         
       }
     }
