@@ -57,13 +57,8 @@ pipeline {
        } 
       stage('Deploy Image') {
       steps{
-        script {
-          docker.withRegistry( '', registryCredential ) {
-            ayoubch1/angular:${BUILD_ID}.push("$BUILD_NUMBER")
-             ayoubch1/angular:${BUILD_ID}.push('latest')
-
-          }
-        }
+       sh 'docker login -u ayoubch1 -p password11*'
+        sh 'docker push ayoubch1/angular:${BUILD_ID}'
       }
     }
     }
