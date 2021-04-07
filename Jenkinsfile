@@ -76,7 +76,7 @@ pipeline {
        stage('RUN Image') {
       steps{
        
-        sh 'docker run -it -d -p 80:80ayoubch1/angular:latest'
+        sh 'docker run -it -d -p 80:80 ayoubch1/angular:latest'
         
       }
     }
