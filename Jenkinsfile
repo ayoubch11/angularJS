@@ -50,7 +50,7 @@ pipeline {
     }
   stage('Build image') {         
      steps {
-       sh 'cd {{WORKSPACE}}/angular@2
+       sh 'cd ${WORKSPACE}/angular@2
        sh ' docker build . -t angular:{BUILD_ID}
             
        }   
