@@ -61,7 +61,7 @@ pipeline {
        
         sh 'docker push ayoubch1/angular:${BUILD_ID}'
         sh 'docker tag ayoubch1/angular:${BUILD_ID} ayoubch1/angular:latest'
-        sh 'docker rmi -fayoubch1/angular:${BUILD_ID}'
+        sh 'docker rmi -f ayoubch1/angular:${BUILD_ID}'
         
       }
     }
