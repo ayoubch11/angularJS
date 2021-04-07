@@ -50,7 +50,7 @@ pipeline {
         }
        stage('Build image') {         
      steps {
-       sh 'docker build /var/lib/jenkins/workspace/angular@2/ -t angular:${BUID_ID}'
+       sh 'docker build /var/lib/jenkins/workspace/angular@2/ -t angular:${BUILD_ID}'
      }
        } 
     }
