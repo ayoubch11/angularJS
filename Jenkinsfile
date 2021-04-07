@@ -54,8 +54,9 @@ pipeline {
      }
        } 
         stage('push image') {  
-          withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "" ])
+          
      steps {
+       withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "" ])
        sh 'docker push ayoubch1/angular:${BUILD_ID}'
      }
        } 
