@@ -55,17 +55,17 @@ pipeline {
        sh 'docker build /var/lib/jenkins/workspace/angular@2/ -t ayoubch1/angular:${BUILD_ID}'
      }
        } 
-        stage('Deploy our image') { 
+      stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            ayoubch1/angular:${BUILD_ID}.push("$BUILD_NUMBER")
+             ayoubch1/angular:${BUILD_ID}.push('latest')
 
-            steps {
-              docker.withRegistry('', 'DockerHub') 
-
-               sh ' docker push ayoubch1/angular:${BUILD_ID}'
-
-            }
-            
-
-        } 
+          }
+        }
+      }
+    }
     }
    
 }
