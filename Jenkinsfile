@@ -14,6 +14,8 @@ pipeline {
             script: "git rev-parse --abbrev-ref HEAD"
         )
         HOME = '.'
+       registry = "YourDockerhubAccount/YourRepository" 
+        registryCredential = 'dockerhub_id' 
         dockerImage = ''
 	  }
 
@@ -53,12 +55,23 @@ pipeline {
        sh 'docker build /var/lib/jenkins/workspace/angular@2/ -t ayoubch1/angular:${BUILD_ID}'
      }
        } 
-        stage('push image') {  
-          
-     steps {
-       sh 'docker push ayoubch1/angular:${BUILD_ID}'
-     }
-       } 
+        stage('Deploy our image') { 
+22
+            steps { 
+23
+                script { 
+24
+                    docker.withRegistry( '', registryCredential ) { 
+25
+                        ayoubch1/angular:${BUILD_ID}.push() 
+26
+                    }
+27
+                } 
+28
+            }
+29
+        } 
     }
    
 }
