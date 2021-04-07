@@ -53,7 +53,8 @@ pipeline {
        sh 'docker build /var/lib/jenkins/workspace/angular@2/ -t ayoubch1/angular:${BUILD_ID}'
      }
        } 
-        stage('push image') {         
+        stage('push image') {  
+          withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "" ])
      steps {
        sh 'docker push ayoubch1/angular:${BUILD_ID}'
      }
