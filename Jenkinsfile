@@ -66,11 +66,11 @@ pipeline {
       }
     }
       
-      stage('Remove Image') {
+      stage('Remove Image & container') {
       steps{
        
         sh 'docker rmi -f ayoubch1/angular:${BUILD_ID}'
-        
+        sh 'docker rm -f angular'
       }
     }
        stage('RUN Image') {
