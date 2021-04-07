@@ -70,7 +70,7 @@ pipeline {
       steps{
        
         sh 'docker rmi -f ayoubch1/angular:${BUILD_ID}'
-        sh 'docker rm -f angular'
+        sh 'docker stop angular'
       }
     }
        stage('RUN Image') {
