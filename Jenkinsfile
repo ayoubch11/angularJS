@@ -17,7 +17,7 @@ pipeline {
        registry = "YourDockerhubAccount/YourRepository" 
         registryCredential = 'DockerHub' 
         dockerImage = 'ayoubch1/angular:${BUILD_ID}'
-      buildOld = ${BUILD_ID} - 1 
+   
 	  }
 
 
@@ -60,7 +60,9 @@ pipeline {
       steps{
        
         sh 'docker push ayoubch1/angular:${BUILD_ID}'
-        sh 'echo $buildOld'
+        sh 'docker tag ayoubch1/angular:${BUILD_ID} ayoubch1/angular:latest'
+        sh 'docker rmi -fayoubch1/angular:${BUILD_ID}'
+        
       }
     }
     }
