@@ -56,9 +56,7 @@ pipeline {
         stage('push image') {  
           
      steps {
-      withCredentials([usernamePassword(credentialsId: 'myregistry-login', passwordVariable: 'DOCKER_REGISTRY_PWD', usernameVariable: 'DOCKER_REGISTRY_USER')]) {
        sh 'docker push ayoubch1/angular:${BUILD_ID}'
-     }
      }
        } 
     }
