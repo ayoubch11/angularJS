@@ -50,7 +50,7 @@ pipeline {
         }
        stage('Build image') {         
      steps {
-       dockerImage = docker.build angular:${BUILD_ID}
+     sh 'docker build -t jenkins-demo:${BUILD_NUMBER}'
      }
        } 
     }
