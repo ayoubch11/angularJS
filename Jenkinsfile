@@ -15,7 +15,7 @@ pipeline {
         )
         HOME = '.'
        registry = "YourDockerhubAccount/YourRepository" 
-        registryCredential = 'dockerhub_id' 
+        registryCredential = 'DockerHub' 
         dockerImage = 'ayoubch1/angular:${BUILD_ID}'
 	  }
 
